@@ -16,8 +16,8 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "last_modified": dt.datetime.now(),
-        {"title":"img_url"}: hemisphere(browser) 
+        "hemispheres": hemisphere(browser),
+        "last_modified": dt.datetime.now()
     }
 
     # Stop webdriver and return data
@@ -211,7 +211,7 @@ def hemisphere(browser):
     hemispheres['title'].append(img_title_v)
     hemispheres['img_url'].append(img_url_v)
     
-    return hemispheres
+    return hemisphere_image_urls
     
     
 if __name__ == "__main__":
