@@ -6,7 +6,7 @@ import datetime as dt
 
 def scrape_all():
     # Initiate headless driver for deployment
-    browser = Browser('chrome', executable_path="chromedriver", headless=True)
+    browser = Browser('chrome', executable_path='C:\\Users\\drjef\\chromedriver\\chromedriver.exe', headless=True)
 
     news_title, news_paragraph = mars_news(browser)
 
@@ -16,7 +16,8 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "last_modified": dt.datetime.now()
+        "last_modified": dt.datetime.now(),
+        {"title":"img_url"}: hemisphere(browser) 
     }
 
     # Stop webdriver and return data
@@ -89,8 +90,130 @@ def mars_facts():
     df.set_index('Description', inplace=True)
 
     # Convert dataframe into HTML format, ad bootstrap
-    return df.tohtml()
+    return df.to_html()
 
+def hemisphere(browser):
+    # 1. Use browser to visit the URL 
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(url)
+
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+    hemispheres = {'title':[], 'img_url':[]}
+    # 3. Write code to retrieve the image urls and titles for each hemisphere.
+    # Retrieve Cerberus data
+    page_link = browser.links.find_by_partial_text('Cerberus')
+    page_link.click()
+
+    # Parse the resulting html with soup
+    html = browser.html
+    img_soup = soup(html, 'html.parser')
+
+    # find the image url
+    img_data_c = img_soup.find('li')
+    img_url_c = img_data_c.find('a').get('href')
+
+    # find the image title
+    img_title_c = img_soup.find('h2', class_='title').get_text()
+
+    # create dict
+    cDict = {}
+    cDict['img_url'] = img_url_c
+    cDict['title'] = img_title_c
+    
+    # append to list
+    hemisphere_image_urls.append(cDict)
+    # append to dictionary
+    hemispheres['title'].append(img_title_c)
+    hemispheres['img_url'].append(img_url_c)
+    
+    browser.back()
+
+    # Retrieve Schiaparelli data
+    page_link = browser.links.find_by_partial_text('Schiaparelli')
+    page_link.click()
+
+    # Parse the resulting html with soup
+    html = browser.html
+    img_soup = soup(html, 'html.parser')
+
+    # find the image url
+    img_data_s = img_soup.find('li')
+    img_url_s = img_data_s.find('a').get('href')
+
+    # find the image title
+    img_title_s = img_soup.find('h2', class_='title').get_text()
+
+    # create dict
+    sDict = {}
+    sDict['img_url'] = img_url_s
+    sDict['title'] = img_title_s
+
+    # append to list
+    hemisphere_image_urls.append(sDict)
+    # append to dictionary
+    hemispheres['title'].append(img_title_s)
+    hemispheres['img_url'].append(img_url_s)
+    
+    browser.back()
+
+    # Retrieve Syrtis Major info
+    page_link = browser.links.find_by_partial_text('Syrtis')
+    page_link.click()
+
+    # Parse the resulting html with soup
+    html = browser.html
+    img_soup = soup(html, 'html.parser')
+
+    # find the image url
+    img_data_sm = img_soup.find('li')
+    img_url_sm = img_data_sm.find('a').get('href')
+
+    # find the image title
+    img_title_sm = img_soup.find('h2', class_='title').get_text()
+
+    # create the dict
+    smDict = {}
+    smDict['img_url'] = img_url_sm
+    smDict['title'] = img_title_sm
+
+    # append to list
+    hemisphere_image_urls.append(smDict)
+    # append to dictionary
+    hemispheres['title'].append(img_title_sm)
+    hemispheres['img_url'].append(img_url_sm)
+    
+    browser.back()
+    
+    # Retrieve Valles Marineris info
+    page_link = browser.links.find_by_partial_text('Valles')
+    page_link.click()
+    
+    # Parse the resulting html with soup
+    html = browser.html
+    img_soup = soup(html, 'html.parser')
+    
+    # find the image url
+    img_data_v = img_soup.find('li')
+    img_url_v = img_data_v.find('a').get('href')
+    
+    # find the image title
+    img_title_v = img_soup.find('h2', class_='title').get_text()
+
+    # create the dict
+    vDict = {}
+    vDict['img_url'] = img_url_v
+    vDict['title'] = img_title_v
+    
+    # append to list
+    hemisphere_image_urls.append(vDict)
+    # append to dictionary
+    hemispheres['title'].append(img_title_v)
+    hemispheres['img_url'].append(img_url_v)
+    
+    return hemispheres
+    
+    
 if __name__ == "__main__":
     # If running as script, print scraped data
     print(scrape_all())
